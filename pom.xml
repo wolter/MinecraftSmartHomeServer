@@ -1,0 +1,130 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>biz.wolter.minecraft.bukkit</groupId>
+	<artifactId>SmartHome</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+	<repositories>
+		<repository>
+			<id>spigot-repo</id>
+			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+		</repository>
+
+		<repository>
+			<id>jcentral-repo</id>
+			<url>http://jcenter.bintray.com/ </url>
+		</repository>
+
+	</repositories>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot-api</artifactId>
+			<version>1.8.8-R0.1-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jmdns</groupId>
+			<artifactId>jmdns</artifactId>
+			<version>3.5.0</version>
+			<scope>compile</scope>
+		</dependency>
+ 
+		<dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-grizzly2-http</artifactId>
+		    <version>2.23.1</version>
+		    <scope>compile</scope>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.glassfish.jersey.media</groupId>
+		    <artifactId>jersey-media-sse</artifactId>
+		    <version>2.23.1</version>
+		    <scope>compile</scope>
+		</dependency>    
+ 		 
+	</dependencies>
+
+	<build>
+
+		<resources>
+			<resource>
+				<!-- substitute plugin.yml properties -->
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+
+		<plugins>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<!-- shade needed jars into the final jar -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>2.4.3</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<!-- <finalName>uber-${artifactId}-${version}</finalName> -->
+                    <!-- <outputDirectory>C:/Users/sw/Desktop/Minecraft-Smart-Home/server/spigot/plugins</outputDirectory> -->
+                    <finalName>SmartHome</finalName>
+				</configuration>				
+			</plugin>
+			
+			<plugin>
+			    <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-resources-plugin</artifactId>
+		        <version>3.0.1</version>
+		        <executions>
+		          <execution>
+		            <id>copy-files-on-build</id>
+		            <!-- here the phase you need -->
+		            <phase>validate</phase>
+		            <goals>
+		              <goal>copy-resources</goal>
+		            </goals>
+		            <configuration>
+		              <outputDirectory>C:/Users/sw/Desktop/Minecraft-Smart-Home/server/spigot/plugins</outputDirectory>
+		              <resources>          
+		                <resource>
+		                  <directory>target</directory>
+		                  <filtering>false</filtering>
+	                      <includes>
+                            <include>SmartHome.jar</include>
+                          </includes>
+		                </resource>
+		              </resources>              
+		            </configuration>            
+		          </execution>
+		        </executions>
+		      </plugin>
+			
+		</plugins>
+	</build>
+
+</project>

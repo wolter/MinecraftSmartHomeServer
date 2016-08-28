@@ -1,0 +1,7 @@
+name: ${project.artifactId}
+main: biz.wolter.minecraft.bukkit.SmartHome
+version: ${project.version}
+commands:
+    sendCommand:
+        description: Smart Home sendCommand
+        usage: /sendCommand

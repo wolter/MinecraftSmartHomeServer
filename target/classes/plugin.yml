@@ -1,0 +1,7 @@
+name: SmartHome
+main: biz.wolter.minecraft.bukkit.SmartHome
+version: 0.0.1-SNAPSHOT
+commands:
+    sendCommand:
+        description: Smart Home sendCommand
+        usage: /sendCommand

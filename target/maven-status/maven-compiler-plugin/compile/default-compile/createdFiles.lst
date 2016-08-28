@@ -1,0 +1,17 @@
+biz\wolter\minecraft\bukkit\SmartHome.class
+biz\wolter\minecraft\bukkit\rest\RestResource$2.class
+biz\wolter\minecraft\bukkit\thing\ThingComponentType.class
+biz\wolter\minecraft\bukkit\event\BlockChangeListener.class
+biz\wolter\minecraft\bukkit\rest\EventsBroadcasterResource.class
+biz\wolter\minecraft\bukkit\thing\Thing.class
+biz\wolter\minecraft\bukkit\rest\RestResource.class
+biz\wolter\minecraft\bukkit\event\BlockChangeListener$1.class
+biz\wolter\minecraft\bukkit\rest\RestResource$1.class
+biz\wolter\minecraft\bukkit\thing\ThingType.class
+biz\wolter\minecraft\bukkit\thing\ThingLocation.class
+biz\wolter\minecraft\bukkit\rest\MessageType.class
+biz\wolter\minecraft\bukkit\thing\ThingComponent.class
+biz\wolter\minecraft\bukkit\command\SendCommand.class
+biz\wolter\minecraft\bukkit\rest\RestResource$3.class
+biz\wolter\minecraft\bukkit\thing\ThingList.class
+biz\wolter\minecraft\bukkit\thing\ThingCommand.class
