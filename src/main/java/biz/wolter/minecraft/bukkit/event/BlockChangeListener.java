@@ -1,6 +1,7 @@
 package biz.wolter.minecraft.bukkit.event;
 
 import java.util.ArrayList;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.bukkit.Material;
@@ -47,6 +48,7 @@ public class BlockChangeListener implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		ThingCommand command = new ThingCommand();
+		command.id = event.getPlayer().getUniqueId().toString();
 		command.location = null;
 		command.component = new ThingComponent();
 		command.component.type = ThingComponentType.PLAYER;
@@ -63,6 +65,7 @@ public class BlockChangeListener implements Listener {
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event) {
 		ThingCommand command = new ThingCommand();
+		command.id = event.getPlayer().getUniqueId().toString();
 		command.location = null;
 		command.component = new ThingComponent();
 		command.component.type = ThingComponentType.PLAYER;
@@ -86,11 +89,13 @@ public class BlockChangeListener implements Listener {
 		Thing thing = thingList.findThingByLocation(location);
 		ThingCommand command = new ThingCommand();
 		command.location = location;
-
+		
 		// Ignore unknown things
 		if (thing == null) {
 			return;
 		}		
+
+		command.id = thing.id;
 		
 		// Make sure to ignore wires (instanceof RedstoneWire). Currently not
 		// needed, because only relevant things will be handled (based in the
@@ -202,6 +207,7 @@ public class BlockChangeListener implements Listener {
 			boolean isOpen = !openable.isOpen(); 
 
 			ThingCommand command = new ThingCommand();
+			command.id = thing.id;
 			command.location = location;			 
 			command.component = thing.getComponentByType(ThingComponentType.OPEN);
 			command.component.state = isOpen;
@@ -302,6 +308,7 @@ public class BlockChangeListener implements Listener {
 		ThingList thingList = smartHome.getThingList();
 
 		Thing thing = new Thing();
+		thing.id = UUID.randomUUID().toString();
 		thing.location = new ThingLocation(block.getLocation());
 		thing.type = type;
 		thing.material = block.getType().name();
@@ -362,8 +369,10 @@ public class BlockChangeListener implements Listener {
 		// Read only blocks (placement always is done via LAMP_OFF)
 		if (block.getType() == Material.REDSTONE_LAMP_OFF) {
 			ThingComponent component;
+			// Special case where subscriber is not interested in the exact material
+			thing.material = "REDSTONE_LAMP";
 			component = new ThingComponent();
-			component.type = ThingComponentType.POWERED;
+			component.type = ThingComponentType.POWERED;			
 			component.state = false;
 			thing.components.add(component);
 		}

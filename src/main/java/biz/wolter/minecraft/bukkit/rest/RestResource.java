@@ -65,6 +65,18 @@ public class RestResource {
 	}
 
 	@GET
+	@Path("things/{id}/")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String getDevice(@PathParam("id") String id) {
+		Gson gson = new Gson();
+		Thing thing = smartHome.getThingList().findThingById(id);
+    	if (thing == null) {
+    		throw new WebApplicationException("Unknown or unsupported block with id " + id + ".");
+    	}
+		return gson.toJson(thing);
+	}
+	
+	@GET
 	@Path("things/{x}/{y}/{z}/")
 	@Produces(MediaType.APPLICATION_JSON)
 	public String getDevice(@PathParam("x") int x, @PathParam("y") int y, @PathParam("z") int z) {
@@ -90,17 +102,27 @@ public class RestResource {
     	
     	World world = Bukkit.getWorld("world"); // from server.properties level-name
     	
-    	Location location = new Location(world, command.location.x, command.location.y, command.location.z);
-		Block block = location.getBlock();
-		BlockState blockState = block.getState();
-		
+    	Thing thing;
        	ThingList thingList = smartHome.getThingList();
-    	final Thing thing = thingList.findThingByLocation(command.location);    		
+    	
+       	// For ease of use you can detect blocks via location (more readable) or id
+    	if (command.id != null && !command.id.isEmpty()) {
+    		thing = thingList.findThingById(command.id);    		
+    	} else {        	
+    		thing = thingList.findThingByLocation(command.location);
+    	}    	
+    	
     	// Ignore unknown things
     	if (thing == null) {
-    		throw new WebApplicationException("Unknown or unsupported block " + blockState.getType().name() +".");
-    	}
-		
+    		logger.warning("Unknown or unsupported block.");
+    		asyncResponse.resume(Response.serverError().build());
+    		return;
+    	}    	
+    	
+    	Location location = new Location(world, thing.location.x, thing.location.y, thing.location.z);
+		Block block = location.getBlock();
+		BlockState blockState = block.getState();
+    	
     	// Beware of Threading and Issue https://bukkit.atlassian.net/browse/BUKKIT-1858
 		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
 		boolean switched = (boolean) command.component.state;
@@ -125,12 +147,14 @@ public class RestResource {
 	            		if (success) {
 	            			ThingCommand updateCommand;
 	        		        updateCommand = new ThingCommand();
+	        		        updateCommand.id = thing.id;
 	                		updateCommand.location = thing.location;
 	                		updateCommand.component = thing.getComponentByType(ThingComponentType.POWERED);
 	                		updateCommand.component.state = switched;						
 	                		EventsBroadcasterResource.broadcastMessage(MessageType.UPDATE_THING, gson.toJson(updateCommand));
 	            			asyncResponse.resume(Response.ok().build());
 	            		} else {
+	                    	logger.warning("Update of block failed.");
 	            			asyncResponse.resume(Response.serverError().build());
 	            		}
 		            }
@@ -149,12 +173,14 @@ public class RestResource {
 	            		if (success) {
 	            			ThingCommand updateCommand;
 	        		        updateCommand = new ThingCommand();
+	        		        updateCommand.id = thing.id;
 	                		updateCommand.location = thing.location;
 	                		updateCommand.component = thing.getComponentByType(ThingComponentType.OPEN);
 	                		updateCommand.component.state = switched;						
 	                		EventsBroadcasterResource.broadcastMessage(MessageType.UPDATE_THING, gson.toJson(updateCommand));
 	            			asyncResponse.resume(Response.ok().build());
 	            		} else {
+	            			logger.warning("Update of block failed.");
 	            			asyncResponse.resume(Response.serverError().build());
 	            		}		    			
 		            }

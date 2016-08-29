@@ -65,4 +65,15 @@ public class ThingList extends ArrayList<Thing> {
     	return thing;
     }
     
+    public Thing findThingById(String id) {
+    	Thing thing = null;
+		for (Thing t : this) {
+			if (t.id.equals(id)) {
+				thing = t;
+				break;
+			}
+		}
+    	return thing;
+    }    
+    
 }

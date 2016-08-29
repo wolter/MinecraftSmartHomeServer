@@ -4,6 +4,9 @@ import java.util.ArrayList;
 
 public class Thing {    	
 	
+	// Location basically is the unique identifier of a device, but in case we will support pistons sometime, blocks could be moved and a immutable id is needed
+	public String id;
+	
 	// Location basically is the unique identifier of a device, because there could only be one at a time at each location
 	public ThingLocation location;
 	// Type describing the thing behavior
