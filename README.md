@@ -1,12 +1,14 @@
 # MinecraftSmartHomeServer
 
-"Minecraft SmartHome Server" is a plug-in for Minecraft servers like Bukkit or Spigot (). It provides a RESTful interface which is based on HTTP POST and GET. Furthermore it supports SSE (Server Sent Events).
+"Minecraft SmartHome Server" is a plug-in for Minecraft servers like Bukkit or Spigot (https://www.spigotmc.org/wiki/spigot/). It provides a RESTful interface which is based on HTTP POST and GET. Furthermore it supports SSE (Server Sent Events).
 
 ## Smart Home Integration
 
-Even if you could use the "Minecraft SmartHome Server" directly via REST, we have a more convenient option using smart home solutions like Eclipse SmartHome (), openHAB (), or QIVICON (): https://github.com/wolter/MinecraftSmartHomeBinding
+Even if you could use the "Minecraft SmartHome Server" directly via REST, we have a more convenient option using smart home solutions like Eclipse SmartHome (http://www.eclipse.org/smarthome/), openHAB (http://www.openhab.org/), or QIVICON (https://www.qivicon.com/en/): https://github.com/wolter/MinecraftSmartHomeBinding
 
 ## Usage
+
+Default port is 9998 (see Configuration)
 
 GET http://[HOST]:[PORT]/rest/hello -> String with "Hello, world!" (just for testing purpose)
 GET http://[HOST]:[PORT]/rest/things -> JSON with list of Thing including current state
@@ -46,10 +48,9 @@ First of all you need a running server. This could be on you local machine, on y
 4. Advanced Options -> Update
 5. Advanced Options -> Hostname (e.g. mcserver)
 6. Overclock 1000Mhz
+7. Wireless usage is described here https://www.raspberrypi.org/documentation/configuration/wireless/wireless-cli.md
 
-(see https://www.raspberrypi.org/documentation/configuration/wireless/wireless-cli.md)
-
-### Installing Minecraft Server Spigot
+### Installing Minecraft Spigot Server
 
 (see https://jankarres.de/2013/04/raspberry-pi-minecraft-server-bukkitspigot-installieren/ and http://lemire.me/blog/2016/04/02/setting-up-a-robust-minecraft-server-on-a-raspberry-pi/)
 
@@ -62,7 +63,7 @@ First of all you need a running server. This could be on you local machine, on y
 7. edit generated eula.txt: eula=true
 8. finally start again java -jar -Xms512M -Xmx1008M spigot-1.8.8.jar nogui
 
--- Optimizing Minecraft Server Spigot
+### Optimizing Minecraft Spigot Server
 
 1. See slides for server.properties
    gamemode=1
