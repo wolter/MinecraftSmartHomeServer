@@ -377,7 +377,7 @@ public class BlockChangeListener implements Listener {
 			thing.components.add(component);
 		}
 
-		thingList.add(thing);
+		thingList.addThing(thing);
 
 		Gson gson = new Gson();
 		// Broadcast thing including components
@@ -394,7 +394,7 @@ public class BlockChangeListener implements Listener {
 		Thing thing = thingList.findThingByLocation(location);
 
 		if (thing != null) {
-			thingList.remove(thing);
+			thingList.removeThing(thing);
 			Gson gson = new Gson();
 			EventsBroadcasterResource.broadcastMessage(MessageType.REMOVE_THING, gson.toJson(thing));
 		} else {

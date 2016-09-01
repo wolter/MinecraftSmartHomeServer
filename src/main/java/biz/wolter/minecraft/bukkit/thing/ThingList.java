@@ -9,13 +9,34 @@ import java.util.ArrayList;
 
 import com.google.gson.Gson;
 
+import biz.wolter.minecraft.bukkit.SmartHome;
+
 public class ThingList extends ArrayList<Thing> {
+	
+	private boolean saveImmediately = true;
 	
 	private File file;
 	
 	private ThingList () {
 	}	
-
+	
+	public boolean removeThing(Thing o) {
+		boolean success = super.remove(o);
+		if (success && saveImmediately) {
+			save();
+		}
+		return success;
+	}
+	
+	public boolean addThing(Thing o) {
+		boolean success = super.add(o);
+		SmartHome.getPlugin(SmartHome.class).getLogger().info("add " + o);
+		if (success && saveImmediately) {
+			save();
+		}
+		return success;
+	}
+	
 	public static ThingList load(File file) {
 		
 		ThingList list;
@@ -34,7 +55,7 @@ public class ThingList extends ArrayList<Thing> {
         return list;
 	}
 	
-    public void save() {
+    public synchronized void save() {
     	
 		String absolutePath = file.getAbsolutePath();
 		File filePath = new File(absolutePath.substring(0,absolutePath.lastIndexOf(File.separator)));
@@ -75,5 +96,9 @@ public class ThingList extends ArrayList<Thing> {
 		}
     	return thing;
     }    
+    
+    public boolean isSavedImmediately() {
+    	return saveImmediately;
+    }
     
 }

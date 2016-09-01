@@ -98,7 +98,9 @@ public class SmartHome extends JavaPlugin {
     	logger.info("Plugin disabled.");
     	
     	// Store changes
-    	getThingList().save();
+    	if (!thingList.isSavedImmediately()) {
+    		getThingList().save();
+    	}
     	
     	// Unregister all services
         jmdns.unregisterAllServices();
