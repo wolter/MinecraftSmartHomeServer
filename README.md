@@ -1,7 +1,28 @@
 # MinecraftSmartHomeServer
-Minecraft Server (Bukkit/Spigot) SmartHome Extension for the use with Eclipse SmartHome, openHAB, and QIVICON via REST and SSE (Server Sent Events).
 
--- Preparing Raspberry Pi
+"Minecraft SmartHome Server" is a plug-in for Minecraft servers like Bukkit or Spigot (). It provides a RESTful interface which is based on HTTP POST and GET. Furthermore it supports SSE (Server Sent Events).
+
+## Smart Home Integration
+
+Even if you could use the "Minecraft SmartHome Server" directly via REST, we have a more convenient option using smart home solutions like Eclipse SmartHome (), openHAB (), or QIVICON (): https://github.com/wolter/MinecraftSmartHomeBinding
+
+## Usage
+
+GET http://[HOST]:[PORT]/rest/hello -> String with "Hello, world!" (just for testing purpose)
+GET http://[HOST]:[PORT]/rest/things -> JSON with list of Thing including current state
+GET http://[HOST]:[PORT]/rest/things/[UID] -> JSON with Thing including current state
+GET http://[HOST]:[PORT]/rest/things/[X]/[Y]/[Z] -> JSON with Thing including current state
+
+POST http://[HOST]:[PORT]/rest/commands/execute/
+Request Body ThingCommand
+
+SSE http://[HOST]:[PORT]/rest/events
+
+## Setup
+
+First of all you need a running server. This could be on you local machine, on your local network or in the Web. In case you do not have a server, here is a sample description for a Raspberry Pi.
+
+### Preparing Raspberry Pi
 
 (see https://www.raspberrypi.org/documentation/)
 
@@ -14,7 +35,7 @@ Minecraft Server (Bukkit/Spigot) SmartHome Extension for the use with Eclipse Sm
 7. Connect to Raspberry either via telnet (Putty) or directly
 8. Login is pi raspberry
 
--- Configure Raspberry Pi
+### Configure Raspberry Pi
 
 (see https://www.raspberrypi.org/documentation/)
 
@@ -26,11 +47,9 @@ Minecraft Server (Bukkit/Spigot) SmartHome Extension for the use with Eclipse Sm
 5. Advanced Options -> Hostname (e.g. mcserver)
 6. Overclock 1000Mhz
 
--- Wifi
-
 (see https://www.raspberrypi.org/documentation/configuration/wireless/wireless-cli.md)
 
--- Installing Minecraft Server Spigot
+### Installing Minecraft Server Spigot
 
 (see https://jankarres.de/2013/04/raspberry-pi-minecraft-server-bukkitspigot-installieren/ and http://lemire.me/blog/2016/04/02/setting-up-a-robust-minecraft-server-on-a-raspberry-pi/)
 
@@ -75,10 +94,17 @@ screen -r minecraft
 stop
 sudo shutdown -h now
 
--- Plug-ins
-1. Usual way
 
+## Install Plug-in
 
+Just place the generated SmartHome.jar file in your servers plug-in folder (usually server/spigot/plugins/). After re-starting the server, you should see "[SmartHome] Plugin enabled." on the console.
 
+## Configure Plug-in
 
+You find the configuration of this plug-in in the plug-in's folder (usually server/spigot/plugins/SmartHome/) named config.yml. The only available setting so far is the port number (default is 9998).
 
+## Hints
+
+If there's something going wrong with connectivity, make sure, the server has an assigned network address before you start the Minececraft server. You can see the assigned and detected address in your Minecraft server's output on the console: "[SmartHome] IP is 192.168.178.36". 
+
+In the rare case something is going wrong, you can always edit or delete the list of Minecraft things maintained by this plug-in. You find this list in the plug-in's folder (usually server/spigot/plugins/SmartHome/) named devices.json. Please note, you need to stop the Minecraft server first, otherwise your changes will be overwritten immediately.
