@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.URI;
 import java.util.ArrayList;
@@ -73,8 +74,23 @@ public class SmartHome extends JavaPlugin {
     	this.getCommand("sendCommand").setExecutor(new SendCommand());   	
     	
 		try {
+
+			// InetAddress addr = InetAddress.getLocalHost();
+			// Hack needed to get the real adapter and it's address
+			// See http://stackoverflow.com/questions/9481865/getting-the-ip-address-of-the-current-machine-using-java
+			InetAddress addr;
+			try(final DatagramSocket socket = new DatagramSocket()){
+				// IP and port are just placeholder to create a connection for the preferred adapter... 
+				socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
+				// ...which helps us to discover the "real" address
+				addr = socket.getLocalAddress();
+			}
+			
+	        // Getting IP address of localhost - getHostAddress returns IP Address in textual format
+	        logger.info("IP is " + addr.getHostAddress());
+			
             // Create a JmDNS instance
-            jmdns = JmDNS.create(InetAddress.getLocalHost());
+            jmdns = JmDNS.create(addr);
             
             String serviceType = "_minecraft-server._tcp.local.";
             String serviceName = "smarthome";
