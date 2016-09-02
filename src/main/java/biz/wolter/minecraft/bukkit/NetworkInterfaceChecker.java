@@ -1,5 +1,6 @@
 package biz.wolter.minecraft.bukkit;
 
+import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -109,6 +110,7 @@ public class NetworkInterfaceChecker {
      * @throws Exception If any validation test failed with an un-recoverable error.
      */
     private boolean isUsableNetworkInterface(NetworkInterface iface) throws Exception {
+    	
         if (!iface.isUp()) {
             return false;
         }
@@ -146,6 +148,10 @@ public class NetworkInterfaceChecker {
             return false;
         }
 
+        if (iface.getDisplayName().toLowerCase(Locale.ENGLISH).startsWith("hyper-v")) {
+            return false;
+        }        
+        
         if (iface.isLoopback()) {
             return false;
         }
@@ -153,7 +159,7 @@ public class NetworkInterfaceChecker {
         return true;
     }
 
-    private boolean isUsableAddress(NetworkInterface networkInterface, InetAddress address) {
+    private boolean isUsableAddress(NetworkInterface networkInterface, InetAddress address) throws IOException {
         return (address instanceof Inet4Address && !address.isLoopbackAddress());
     }
 
