@@ -22,6 +22,7 @@ import org.glassfish.jersey.server.ResourceConfig;
 
 import biz.wolter.minecraft.bukkit.command.SendCommand;
 import biz.wolter.minecraft.bukkit.event.BlockChangeListener;
+import biz.wolter.minecraft.bukkit.net.NetworkInterfaceChecker;
 import biz.wolter.minecraft.bukkit.rest.EventsBroadcasterResource;
 import biz.wolter.minecraft.bukkit.rest.RestResource;
 import biz.wolter.minecraft.bukkit.thing.ThingList;

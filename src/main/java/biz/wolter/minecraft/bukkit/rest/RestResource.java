@@ -13,6 +13,7 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.StatusType;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -32,6 +33,7 @@ import org.bukkit.material.PressurePlate;
 import org.bukkit.material.Redstone;
 import org.bukkit.material.RedstoneWire;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.glassfish.grizzly.http.util.HttpStatus;
 
 import com.google.gson.Gson;
 
@@ -115,7 +117,7 @@ public class RestResource {
     	// Ignore unknown things
     	if (thing == null) {
     		logger.warning("Unknown or unsupported block.");
-    		asyncResponse.resume(Response.serverError().build());
+    		asyncResponse.resume(Response.status(HttpStatus.NOT_FOUND_404.getStatusCode()).build());
     		return;
     	}    	
     	
@@ -133,29 +135,33 @@ public class RestResource {
 		        scheduler.scheduleSyncDelayedTask(SmartHome.getPlugin(SmartHome.class), new Runnable() {
 		            @Override
 		            public void run() {
-		            	
-		            	if (blockState.getData() instanceof Lever) {    				
-    	    				Lever lever = (Lever) blockState.getData();
-    	    				lever.setPowered(switched);    	    				
-    	    				blockState.setData(lever);
-		            	} else {
-		            		Button button = (Button) blockState.getData();
-		            		button.setPowered(switched);
-		            		blockState.setData(button);
-		            	}
-	            		boolean success = blockState.update(true, true);
-	            		if (success) {
-	            			ThingCommand updateCommand;
-	        		        updateCommand = new ThingCommand();
-	        		        updateCommand.id = thing.id;
-	                		updateCommand.location = thing.location;
-	                		updateCommand.component = thing.getComponentByType(ThingComponentType.POWERED);
-	                		updateCommand.component.state = switched;						
-	                		EventsBroadcasterResource.broadcastMessage(MessageType.UPDATE_THING, gson.toJson(updateCommand));
-	            			asyncResponse.resume(Response.ok().build());
-	            		} else {
-	                    	logger.warning("Update of block failed.");
-	            			asyncResponse.resume(Response.serverError().build());
+		            	try {
+			            	if (blockState.getData() instanceof Lever) {    				
+	    	    				Lever lever = (Lever) blockState.getData();
+	    	    				lever.setPowered(switched);    	    				
+	    	    				blockState.setData(lever);
+			            	} else {
+			            		Button button = (Button) blockState.getData();
+			            		button.setPowered(switched);
+			            		blockState.setData(button);
+			            	}
+		            		boolean success = blockState.update(true, true);
+		            		if (success) {
+		            			ThingCommand updateCommand;
+		        		        updateCommand = new ThingCommand();
+		        		        updateCommand.id = thing.id;
+		                		updateCommand.location = thing.location;
+		                		updateCommand.component = thing.getComponentByType(ThingComponentType.POWERED);
+		                		updateCommand.component.state = switched;						
+		                		EventsBroadcasterResource.broadcastMessage(MessageType.UPDATE_THING, gson.toJson(updateCommand));
+		            			asyncResponse.resume(Response.ok().build());
+		            		} else {
+		                    	logger.warning("Update of block failed.");
+		            			asyncResponse.resume(Response.status(HttpStatus.NOT_MODIFIED_304.getStatusCode()).build());
+		            		}
+		            	} catch (Exception e) {
+	            			logger.warning("Update of block failed with " + e.getMessage());
+	            			asyncResponse.resume(Response.status(HttpStatus.INTERNAL_SERVER_ERROR_500.getStatusCode()).build());	            			
 	            		}
 		            }
 		        });
@@ -166,23 +172,28 @@ public class RestResource {
     			
 		        scheduler.scheduleSyncDelayedTask(SmartHome.getPlugin(SmartHome.class), new Runnable() {
 		            @Override
-		            public void run() {    			
-		    			((Openable) blockState.getData()).setOpen((Boolean) command.component.state); // Open or close the door    				 
-		    		    blockState.setData(blockState.getData()); // Add the data to the BlockState
-	            		boolean success = blockState.update(true, true); //Update the BlockState, the door will now open
-	            		if (success) {
-	            			ThingCommand updateCommand;
-	        		        updateCommand = new ThingCommand();
-	        		        updateCommand.id = thing.id;
-	                		updateCommand.location = thing.location;
-	                		updateCommand.component = thing.getComponentByType(ThingComponentType.OPEN);
-	                		updateCommand.component.state = switched;						
-	                		EventsBroadcasterResource.broadcastMessage(MessageType.UPDATE_THING, gson.toJson(updateCommand));
-	            			asyncResponse.resume(Response.ok().build());
-	            		} else {
-	            			logger.warning("Update of block failed.");
-	            			asyncResponse.resume(Response.serverError().build());
-	            		}		    			
+		            public void run() {
+		            	try {
+			    			((Openable) blockState.getData()).setOpen((Boolean) command.component.state); // Open or close the door    				 
+			    		    blockState.setData(blockState.getData()); // Add the data to the BlockState
+		            		boolean success = blockState.update(true, true); //Update the BlockState, the door will now open
+		            		if (success) {
+		            			ThingCommand updateCommand;
+		        		        updateCommand = new ThingCommand();
+		        		        updateCommand.id = thing.id;
+		                		updateCommand.location = thing.location;
+		                		updateCommand.component = thing.getComponentByType(ThingComponentType.OPEN);
+		                		updateCommand.component.state = switched;						
+		                		EventsBroadcasterResource.broadcastMessage(MessageType.UPDATE_THING, gson.toJson(updateCommand));
+		            			asyncResponse.resume(Response.ok().build());
+		            		} else {
+		            			logger.warning("Update of block failed.");
+		            			asyncResponse.resume(Response.status(HttpStatus.NOT_MODIFIED_304.getStatusCode()).build());
+		            		}
+	            		} catch (Exception e) {
+	            			logger.warning("Update of block failed with " + e.getMessage());
+	            			asyncResponse.resume(Response.status(HttpStatus.INTERNAL_SERVER_ERROR_500.getStatusCode()).build());	            			
+	            		}
 		            }
 		        });
 		        
@@ -190,7 +201,7 @@ public class RestResource {
     			
     		default:
     			logger.warning("Unknown or unsupported component type " + command.component.type +".");
-    			asyncResponse.resume(Response.serverError().build());
+    			asyncResponse.resume(Response.status(HttpStatus.BAD_REQUEST_400.getStatusCode()).build());
     	}
 	}
 }

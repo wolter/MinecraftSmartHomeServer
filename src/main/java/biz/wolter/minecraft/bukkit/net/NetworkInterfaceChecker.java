@@ -1,4 +1,4 @@
-package biz.wolter.minecraft.bukkit;
+package biz.wolter.minecraft.bukkit.net;
 
 import java.io.IOException;
 import java.net.Inet4Address;
