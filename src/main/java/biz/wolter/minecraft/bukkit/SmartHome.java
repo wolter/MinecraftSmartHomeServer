@@ -121,7 +121,9 @@ public class SmartHome extends JavaPlugin {
         }
 
         // Unregister all services
-        jmdns.unregisterAllServices();
+        if (jmdns != null) jmdns.unregisterAllServices();
+        
+        // Shutdown REST and SSE server
         server.shutdownNow();
     }
 
