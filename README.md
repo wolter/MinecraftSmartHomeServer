@@ -45,6 +45,7 @@ First of all you need a running server. This could be on you local machine, on y
 ### Installing Minecraft Spigot Server
 
 There are plenty of how-tos on the installation of a Minecraft server. I.e. this English one [here](http://lemire.me/blog/2016/04/02/setting-up-a-robust-minecraft-server-on-a-raspberry-pi/) and a German one [here](https://jankarres.de/2013/04/raspberry-pi-minecraft-server-bukkitspigot-installieren/). Usually you need the follwoing steps:
+
 1. `sudo apt-get install git netatalk screen`
 2. `sudo apt-get install oracle-java8-jdk`
 3. `mkdir minecraft`, `cd minecraft`
