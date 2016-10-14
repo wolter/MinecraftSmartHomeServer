@@ -1,4 +1,4 @@
-o# MinecraftSmartHomeServer
+# MinecraftSmartHomeServer
 
 "Minecraft SmartHome Server" is a plug-in for Minecraft servers like Bukkit or [Spigot](https://www.spigotmc.org/wiki/spigot/). It provides a RESTful interface which is based on HTTP POST and GET. Furthermore it supports SSE (Server Sent Events).
 
